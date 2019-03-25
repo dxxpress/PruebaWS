@@ -2,10 +2,19 @@ package com.example.dx_deas.pruebaws;
 
 
 
+import android.Manifest;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import android.view.View;
@@ -13,6 +22,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.Gson;
 
 import org.ksoap2.SoapEnvelope;
@@ -33,7 +44,7 @@ public class Login extends AppCompatActivity {
     String mensaje;
     String tran;
     SoapPrimitive resultString;
-
+private static final int ERRO_DIALOG_REQUEST = 9001 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +53,28 @@ public class Login extends AppCompatActivity {
         usu = (EditText) findViewById(R.id.editTextUser);
         pass = (EditText)findViewById(R.id.editTextPass);
         ingre = (Button)findViewById(R.id.btnIngresar);
+
+        runtime_permissions();
+
+        if (!isTaskRoot()
+                && getIntent().hasCategory(Intent.CATEGORY_LAUNCHER)
+                && getIntent().getAction() != null
+                && getIntent().getAction().equals(Intent.ACTION_MAIN)) {
+
+            finish();
+            return;
+        }
+
+
+        int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(Login.this);
+        if (code == ConnectionResult.SUCCESS) {
+            // Do Your Stuff Here
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(code)){
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(Login.this,code,ERRO_DIALOG_REQUEST);
+            dialog.show();
+        }else {
+            Toast.makeText(this,"Wa can't make map requests", Toast.LENGTH_SHORT).show();
+        }
 
         ingre.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +107,31 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+    private boolean runtime_permissions(){
+        if (Build.VERSION.SDK_INT>=23 &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                &&
+                ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
 
+        { requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},100);
+
+            return true;
+        }else {
+            return false;
+        }
+
+    }
+    //Se solicita permisos al usuario  y se Inicia el servicio
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode== 100){
+            if (grantResults[0]==PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager
+                    .PERMISSION_GRANTED) {
+            }
+        }
+
+    }
 
    //Tarea en segundo plano
     private class SegundoPlano extends AsyncTask<Void, Void, Void> {
@@ -97,6 +154,12 @@ public class Login extends AppCompatActivity {
             if (tran.length() <= 15) {
              Toast.makeText(Login.this, "Cuenta Equivocada", Toast.LENGTH_SHORT).show();
             } else {
+
+                SharedPreferences preferences = getSharedPreferences ("credenciales", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("user", login);
+                editor.putString("pass", password);
+                editor.commit();
 
             //Libreria gson se utliza para traducir de json a string y viceversa
              Gson gson = new Gson();

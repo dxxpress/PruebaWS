@@ -1,11 +1,18 @@
 package com.example.dx_deas.pruebaws;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Base64;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,24 +21,32 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.internal.IMapFragmentDelegate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.http.params.HttpParams;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 public class enviarFragment extends Fragment {
 
@@ -44,20 +59,15 @@ public class enviarFragment extends Fragment {
     String mensaje;
     String mensaje2;
     EditText facturatxt, sellotxt, bultostxt, pesotxt, porcentajetxt;
-    CheckBox checkEntr,checkSal ;
-    TextView tramo , facturatv , sellotv , bultostv , pesotv, porcentajetv ,txtlle ;
+    TextView tramo ;
     Button btnenviar;
-    String llegada;
-    String factura;
-    String sello;
-    String bultos;
-    String peso;
-    String porcentaje;
-    String idDetalleViaje;
     String respuesta;
-    Boolean selec ;
     String idUsuario,idUnidad ;
+    ImageView imagenSelec ;
+    String encodedImage;
+    Spinner spinner;
 
+    private static final int RESULT_LOAD_IMAGE = 1 ;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +83,15 @@ public class enviarFragment extends Fragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null){
+            Uri selectedImage = data.getData();
+            imagenSelec.setImageURI(selectedImage);
+      }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -81,101 +100,59 @@ public class enviarFragment extends Fragment {
         String fechatxt  = (String) android.text.format.DateFormat.format("yyyy-MM-dd hh:mm:ss", new Date());
 
         tramo = (TextView) view.findViewById(R.id.tramoActualtxt);
-
         facturatxt = (EditText) view.findViewById(R.id.facturatxt);
         sellotxt = (EditText) view.findViewById(R.id.sellotxt);
         bultostxt = (EditText) view.findViewById(R.id.bultostxt);
         pesotxt = (EditText) view.findViewById(R.id.pesotxt);
         porcentajetxt = (EditText) view.findViewById(R.id.porcentajetxt);
-
         btnenviar = (Button) view.findViewById(R.id.btnEnviar);
+        spinner = (Spinner) view.findViewById(R.id.spinner1);
+        imagenSelec = (ImageView) view.findViewById(R.id.imagen_select);
 
-        checkEntr = (CheckBox) view.findViewById(R.id.checkBoxEntr);
-        checkSal = (CheckBox) view.findViewById(R.id.checkBoxSal);
+        String [] values = {"Llegada","Salida",};
 
-        facturatv = (TextView) view.findViewById(R.id.factura);
-        sellotv = (TextView) view.findViewById(R.id.sello);
-        bultostv = (TextView) view.findViewById(R.id.bultos);
-        pesotv = (TextView) view.findViewById(R.id.peso);
-        porcentajetv = (TextView) view.findViewById(R.id.llenado);
-
-        txtlle= (TextView) view.findViewById(R.id.textLle);
-
-        facturatv.setVisibility(View.INVISIBLE);
-        sellotv.setVisibility(View.INVISIBLE);
-        bultostv.setVisibility(View.INVISIBLE);
-        pesotv.setVisibility(View.INVISIBLE);
-        porcentajetv.setVisibility(View.INVISIBLE);
-
-
-        facturatxt.setVisibility(View.INVISIBLE);
-        sellotxt.setVisibility(View.INVISIBLE);
-        bultostxt.setVisibility(View.INVISIBLE);
-        pesotxt.setVisibility(View.INVISIBLE);
-        porcentajetxt.setVisibility(View.INVISIBLE);
-
-        txtlle.setVisibility(View.INVISIBLE);
-
-        boolean EntInput = checkEntr.isChecked();
-        boolean SalInput = checkSal.isChecked();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(adapter);
 
 
 
-        checkEntr.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        imagenSelec.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(checkEntr.isChecked())  //Check if first is checked
-                {
-                    checkSal.setChecked(false);
-                    txtlle.setVisibility(View.VISIBLE);
-
-                }else{
-                    txtlle.setVisibility(View.INVISIBLE);
-                }
-
-
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent,RESULT_LOAD_IMAGE);
             }
         });
 
-        checkSal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+     /*  btnImagen.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(checkSal.isChecked())  //Check if first is checked
-                {
-                    checkEntr.setChecked(false);
-                    facturatv.setVisibility(View.VISIBLE);
-                    sellotv.setVisibility(View.VISIBLE);
-                    bultostv.setVisibility(View.VISIBLE);
-                    pesotv.setVisibility(View.VISIBLE);
-                    porcentajetv.setVisibility(View.VISIBLE);
+            public void onClick(View v) {
+                Bitmap image = ((BitmapDrawable) imagenSelec.getDrawable()).getBitmap();
 
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-                    facturatxt.setVisibility(View.VISIBLE);
-                    sellotxt.setVisibility(View.VISIBLE);
-                    bultostxt.setVisibility(View.VISIBLE);
-                    pesotxt.setVisibility(View.VISIBLE);
-                    porcentajetxt.setVisibility(View.VISIBLE);
-                }else{
-                    facturatv.setVisibility(View.INVISIBLE);
-                    sellotv.setVisibility(View.INVISIBLE);
-                    bultostv.setVisibility(View.INVISIBLE);
-                    pesotv.setVisibility(View.INVISIBLE);
-                    porcentajetv.setVisibility(View.INVISIBLE);
+                image.compress(Bitmap.CompressFormat.JPEG,10 ,byteArrayOutputStream);
 
+                 encodedImage = Base64.encodeToString(byteArrayOutputStream.toByteArray(),Base64.DEFAULT);
 
-                    facturatxt.setVisibility(View.INVISIBLE);
-                    sellotxt.setVisibility(View.INVISIBLE);
-                    bultostxt.setVisibility(View.INVISIBLE);
-                    pesotxt.setVisibility(View.INVISIBLE);
-                    porcentajetxt.setVisibility(View.INVISIBLE);
-                }
+                byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0,decodedString.length);
+
+                WS_Enviar ws_enviar = new WS_Enviar();
+                ws_enviar.execute();
 
             }
-        });
+        });*/
 
 
 
-        btnenviar.setOnClickListener(new View.OnClickListener() {
+
+
+
+
+
+      /*  btnenviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 factura = facturatxt.getText().toString();
@@ -187,7 +164,7 @@ public class enviarFragment extends Fragment {
 
 
             }
-        });
+        });*/
 
         return view;
     }
@@ -199,21 +176,21 @@ public class enviarFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            String SOAP_ACTION = "http://dxxpress.net/wsInspeccion/Version_20171221_1212";
-            String METHOD_NAME = "DatosCargaSave";
-            String NAMESPACE = "http://dxxpress.net/wsInspeccion/";
-            String URL = "http://dxxpress.net/wsInspeccion/interfaceOperadores3.asmx";
+            String SOAP_ACTION = "http://dxxpress.net/wsInspeccion(TEST)/Version_20171221_1212";
+            String METHOD_NAME = "img64";
+            String NAMESPACE = "http://dxxpress.net/wsInspeccion(TEST)/";
+            String URL = "http://dxxpress.net/wsInspeccion(TEST)/interfaceOperadores3.asmx";
 
 
             try {
                 //SE CREA UN OBJETO SOAP Y SE LE AGREGAN LOS PARAMETROS DE ENTRADA
                 SoapObject Request = new SoapObject(NAMESPACE, METHOD_NAME);
-                Request.addProperty("factura", factura);
-                Request.addProperty("porcLlenado", porcentaje);
+                Request.addProperty("imageBase64", encodedImage);
+               /* Request.addProperty("porcLlenado", porcentaje);
                 Request.addProperty("sello", sello);
                 Request.addProperty("peso", peso);
                 Request.addProperty("bultos", bultos);
-                Request.addProperty("idDetalleViaje", idDetalleViaje);
+                Request.addProperty("idDetalleViaje", idDetalleViaje);*/
 
 
                 //SE EMPAQUETA EL OBJETO ,SE LE ASIGNA UNA VERSION (V11,V12) Y SE ESCRIBE EL LENGUAJE DONDE FUE CREADO EL WS
@@ -330,8 +307,6 @@ public class enviarFragment extends Fragment {
                     String longitudDestino = viaje.getLongitudDestino();
 
                     tramo.setText(nombreTramo);
-                    txtlle.setText("INFORMAR LLEGADA\n\n" + "Unidad : " + nombreUnidad + "\n\n" + "Operador : " + nombreOperador + "\n\n" + "Destino Final : " + nombreDestino + "\n\n"
-                    + "Ruta : " + nombreRuta + "\n\n" + "Remolque : " + nombreRemolquePrincipal);
 
 
                 }

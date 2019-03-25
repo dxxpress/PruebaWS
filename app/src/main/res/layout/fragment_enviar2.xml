@@ -12,86 +12,83 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <Spinner
-        android:id="@+id/spinner1"
-        android:layout_width="200dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="40dp"
+    <ImageView
+        android:id="@+id/imagen_select"
+        android:layout_width="197dp"
+        android:layout_height="111dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="320dp"
         android:layout_marginEnd="92dp"
+        android:background="@color/azul_chingon"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imagen_select"
-        android:layout_width="200dp"
-        android:layout_height="141dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="316dp"
-        android:layout_marginEnd="80dp"
-        android:background="@color/azul_chingon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnEnviar"
-        android:layout_width="286dp"
-        android:layout_height="37dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="16dp"
         android:background="@color/azul_chingon"
         android:text="Enviar"
         android:textColor="@color/blaco_vergas"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/facturatxt"
         android:layout_width="200dp"
         android:layout_height="37dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="92dp"
         android:ems="10"
         android:hint="Factura"
         android:inputType="textPersonName"
         android:textSize="13dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <EditText
         android:id="@+id/sellotxt"
         android:layout_width="200dp"
         android:layout_height="37dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="124dp"
-        android:layout_marginEnd="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="92dp"
         android:ems="10"
         android:hint="Sello"
         android:inputType="textPersonName"
         android:textSize="13dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/facturatxt" />
+
 
     <TextView
-        android:id="@+id/tramoActualtxt"
+        android:id="@+id/tramoActual"
         android:layout_width="wrap_content"
-        android:layout_height="17dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="80dp"
-        android:text="Tramo Actual"
-        android:textColor="@color/colorPrimaryDark"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:text="Su Tramo Actual : "
+        android:textColor="@color/griseson"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Tramo Actual" />
+
 
     <View
         android:id="@+id/view"
@@ -104,50 +101,66 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.49" />
 
     <EditText
         android:id="@+id/bultostxt"
         android:layout_width="200dp"
         android:layout_height="37dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="172dp"
-        android:layout_marginEnd="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="92dp"
         android:ems="10"
         android:hint="Bultos"
         android:inputType="numberDecimal"
         android:textSize="13dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/sellotxt" />
 
     <EditText
         android:id="@+id/pesotxt"
         android:layout_width="200dp"
         android:layout_height="37dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="216dp"
-        android:layout_marginEnd="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="92dp"
         android:ems="10"
         android:hint="Peso"
         android:inputType="numberDecimal"
         android:textSize="13dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/bultostxt" />
 
     <EditText
         android:id="@+id/porcentajetxt"
         android:layout_width="200dp"
         android:layout_height="37dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="264dp"
-        android:layout_marginEnd="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="92dp"
         android:ems="10"
         android:hint="Porcentaje de Llenado"
         android:inputType="numberDecimal"
         android:textSize="13dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pesotxt" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="92dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

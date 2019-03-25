@@ -9,7 +9,7 @@ public class Chat {
     private  String mensaje ;
     private  String comentarioCorto ;
     private  String idUsuario ;
-    private  String usuario ;
+    private  String nombre ;
     private  String editable ;
     private  String tramo ;
 
@@ -21,7 +21,7 @@ public class Chat {
         this.mensaje = mensaje;
         this.comentarioCorto = comentarioCorto;
         this.idUsuario = idUsuario;
-        this.usuario = usuario;
+        this.nombre = usuario;
         this.editable = editable;
         this.tramo = tramo;
     }
@@ -55,7 +55,7 @@ public class Chat {
     }
 
     public String getUsuario() {
-        return usuario;
+        return nombre;
     }
 
     public String getEditable() {

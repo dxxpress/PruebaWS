@@ -14,7 +14,6 @@ import java.util.List;
 
 public class chatAdapter extends ArrayAdapter<Chat> {
 
-
     public chatAdapter(FragmentActivity fragmentActivity, List<Chat> chat) {
         super(fragmentActivity, 0,chat);
     }
@@ -23,41 +22,108 @@ public class chatAdapter extends ArrayAdapter<Chat> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
         Chat currentMen = getItem(position);
+
+        final ViewHolder mholder;
+
         if (convertView == null) {
 
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_message_sent, parent, false);
+            //convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_message_sent, parent, false);
+
+            mholder = new ViewHolder();
 
             String str1 = currentMen.getUsuario();
             String str2 = "d-";
+            String str3 = "mk";
 
-        if (str1.toLowerCase().contains(str2.toLowerCase())){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_message_sent, parent, false);
-            TextView mensaje = (TextView) convertView.findViewById(R.id.mensajeEnviadoTxt);
-            TextView hora = (TextView) convertView.findViewById(R.id.mensajeEnviadoTime);
-            mensaje.setText(currentMen.getMensaje());
-            hora.setText(currentMen.getFecha());
+            if (str1.toLowerCase().contains(str2.toLowerCase()) ||  str1.toLowerCase().contains(str3.toLowerCase())){
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_message_sent, parent, false);
 
-        }
+                mholder.mensaje1 = (TextView) convertView.findViewById(R.id.mensajeEnviadoTxt);
+                mholder.hora1= (TextView) convertView.findViewById(R.id.mensajeEnviadoTime);
+
+                mholder.mensaje1.setText(currentMen.getMensaje());
+                mholder.hora1.setText(currentMen.getFecha());
+
+
+
+            }
             else {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_message_received, parent, false);
-                TextView mensaje2 = (TextView) convertView.findViewById(R.id.mensajeRecibidotxt);
-                TextView hora2 = (TextView) convertView.findViewById(R.id.mensajeRecibidoTime);
-                mensaje2.setText(currentMen.getMensaje());
-                hora2.setText(currentMen.getFecha());
+
+                mholder.nombre = (TextView) convertView.findViewById(R.id.text_message_name);
+                mholder.mensaje2 = (TextView) convertView.findViewById(R.id.mensajeRecibidotxt);
+                mholder.hora2 = (TextView) convertView.findViewById(R.id.mensajeRecibidoTime);
+
+                mholder.mensaje2.setText(currentMen.getMensaje());
+                mholder.hora2.setText(currentMen.getFecha());
+                mholder.nombre.setText(currentMen.getUsuario());
+
+
+
             }
+
+            convertView.setTag(mholder);
+        }else {
+
+
+
+            mholder = new ViewHolder();
+
+            String str1 = currentMen.getUsuario();
+            String str2 = "d-";
+            String str3 = "mk";
+
+            if (str1.toLowerCase().contains(str2.toLowerCase()) ||  str1.toLowerCase().contains(str3.toLowerCase())){
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_message_sent, parent, false);
+
+                mholder.mensaje1 = (TextView) convertView.findViewById(R.id.mensajeEnviadoTxt);
+                mholder.hora1= (TextView) convertView.findViewById(R.id.mensajeEnviadoTime);
+
+                mholder.mensaje1.setText(currentMen.getMensaje());
+                mholder.hora1.setText(currentMen.getFecha());
+
+
+
+            }
+            else {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_message_received, parent, false);
+
+                mholder.nombre = (TextView) convertView.findViewById(R.id.text_message_name);
+                mholder.mensaje2 = (TextView) convertView.findViewById(R.id.mensajeRecibidotxt);
+                mholder.hora2 = (TextView) convertView.findViewById(R.id.mensajeRecibidoTime);
+
+                mholder.mensaje2.setText(currentMen.getMensaje());
+                mholder.hora2.setText(currentMen.getFecha());
+                mholder.nombre.setText(currentMen.getUsuario());
+
+
+
+            }
+
         }
 
 
         return convertView;
     }
 
-   @Override
+    static class ViewHolder {
+        TextView mensaje1;
+        TextView hora1;
+
+        TextView nombre;
+        TextView mensaje2;
+        TextView hora2;
+    }
+
+    @Override
     public int getItemViewType(int position) {
         Chat currentMen = getItem(position);
         String str1 = currentMen.getUsuario();
         String str2 = "d-";
-        if (str1.toLowerCase().contains(str2.toLowerCase())){
+        String str3 = "mk";
+        if (str1.toLowerCase().contains(str2.toLowerCase()) || str1.toLowerCase().contains(str3.toLowerCase())){
             return 0;
         }
         else {
@@ -70,3 +136,4 @@ public class chatAdapter extends ArrayAdapter<Chat> {
         return 2;
     }
 }
+

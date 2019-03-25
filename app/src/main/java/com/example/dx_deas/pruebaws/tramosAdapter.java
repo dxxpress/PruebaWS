@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 public class tramosAdapter extends ArrayAdapter<Tramos> {
 
     String idDetViaje;
+
 
 
     public tramosAdapter(FragmentActivity fragmentActivity, List<Tramos> tramos, String idDetalleViaje) {
@@ -43,7 +45,7 @@ public class tramosAdapter extends ArrayAdapter<Tramos> {
         }
 
 
-        Tramos currentTramo = getItem(position);
+        final Tramos currentTramo = getItem(position);
         TextView hora = (TextView) convertView.findViewById(R.id.hora);
         TextView colo = (TextView) convertView.findViewById(R.id.colo);
         TextView nombre = (TextView) convertView.findViewById(R.id.nombreTramo);
@@ -55,29 +57,46 @@ public class tramosAdapter extends ArrayAdapter<Tramos> {
 
         Button btncerrar = (Button) convertView.findViewById(R.id.btnCerrarTramo);
 
+
+        btncerrar.setVisibility(View.INVISIBLE);
+        int secu = Integer.parseInt(currentTramo.getSecuencia());
         int vali = Integer.parseInt(currentTramo.getEstatus());
         String fechaEntrada = currentTramo.getFechaEntrada();
-        btncerrar.setVisibility(View.INVISIBLE);
 
         if (vali == 2 ){
-            colo.setBackgroundColor(Color.parseColor("#5858FA"));
+            colo.setBackgroundColor(Color.parseColor("#074EAB"));
             colo.setText("Terminado");
-
+            btncerrar.setVisibility(View.INVISIBLE);
         }
         if (vali == 1 ){
             colo.setBackgroundColor(Color.parseColor("#298A08"));
             colo.setText("Proximo");
-
+             btncerrar.setVisibility(View.VISIBLE);
         }
-       if (vali == 1 && (fechaEntrada.length() >= 5)){
+        if (vali == 3 ){
+            colo.setBackgroundColor(Color.parseColor("#FE9A2E"));
+            colo.setText("Cancelado");
+            btncerrar.setVisibility(View.INVISIBLE);
+        }
+        if (secu == 1 ){
+            colo.setBackgroundColor(Color.parseColor("#074EAB"));
+            colo.setText("Terminado");
+            btncerrar.setVisibility(View.INVISIBLE);
+        }
+        if (vali == 1 && (fechaEntrada.length() >= 5)){
             colo.setBackgroundColor(Color.parseColor("#FFFF00"));
-            colo.setText("Actual");
-           btncerrar.setVisibility(View.VISIBLE);
+            colo.setText("Ultima\n"+"Salida");
+            btncerrar.setVisibility(View.INVISIBLE);
         }
 
         btncerrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String mensaje = currentTramo.getNombre();
+
+                Intent intent = new Intent(v.getContext(),enviarActivity   .class);
+                v.getContext().startActivity(intent);
+
 
             }
         });
@@ -85,4 +104,6 @@ public class tramosAdapter extends ArrayAdapter<Tramos> {
 
         return convertView;
     }
+
+
 }

@@ -1,6 +1,8 @@
 package com.example.dx_deas.pruebaws;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,9 +24,9 @@ public class menuPrincipal extends AppCompatActivity
 
     String idUnidad;
     String idFlota ;
-
-
-
+    String nombreOperador;
+    String idUsuario;
+    String idViaje;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +36,32 @@ public class menuPrincipal extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("DX Xpress");
 
-        String nombreOperador = getIntent().getStringExtra("nombreOperador");
-        idUnidad = getIntent().getStringExtra("idUnidad");
-        String idUsuario = getIntent().getStringExtra("idUsuario");
-        String idViaje = getIntent().getStringExtra("idViaje");
-        idFlota = getIntent().getStringExtra("idFlota");
 
+        String nombreOperadorO = getIntent().getStringExtra("nombreOperador");
+        String idUnidadO = getIntent().getStringExtra("idUnidad");
+        String idUsuarioO = getIntent().getStringExtra("idUsuario");
+        String idViajeO = getIntent().getStringExtra("idViaje");
+        String idFlotaO = getIntent().getStringExtra("idFlota");
+
+        if (idUsuarioO == null) {
+            nombreOperador = getIntent().getStringExtra("nombreOperadorS");
+            idUnidad = getIntent().getStringExtra("idUnidadS");
+            idUsuario = getIntent().getStringExtra("idUsuarioS");
+            idViaje = getIntent().getStringExtra("idViajeS");
+            idFlota = getIntent().getStringExtra("idFlotaS");
+        }
+            else {
+            nombreOperador = getIntent().getStringExtra("nombreOperador");
+            idUnidad = getIntent().getStringExtra("idUnidad");
+            idUsuario = getIntent().getStringExtra("idUsuario");
+            idViaje = getIntent().getStringExtra("idViaje");
+            idFlota = getIntent().getStringExtra("idFlota");
+            }
+
+
+       Intent i = new Intent(menuPrincipal.this, notifi_WS.class);
+        i.putExtra("idUnidad", idUnidad);
+        startService(i);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -50,6 +72,7 @@ public class menuPrincipal extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.contenedor,new viajeFragment()).commit();
@@ -97,6 +120,8 @@ public class menuPrincipal extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,new chatFragment()).commit();
         } else if (id == R.id.nav_enviar) {
             getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,new enviarFragment()).commit();
+        } else if (id == R.id.nav_hist) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,new histFragment()).commit();
         } else if (id == R.id.nav_mapa) {
             Intent i = new Intent(menuPrincipal.this, MapsActivity.class);
             i.putExtra("idFlota", idFlota);
@@ -104,6 +129,14 @@ public class menuPrincipal extends AppCompatActivity
             startActivity(i);
            // getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,new mapaFragment()).commit();
         } else if (id == R.id.nav_cerrar) {
+
+            SharedPreferences preferences = getSharedPreferences ("credenciales", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("user", "");
+            editor.putString("pass", "");
+            editor.commit();
+
+
             Intent i = new Intent(menuPrincipal.this, Login.class);
             startActivity(i);
         }

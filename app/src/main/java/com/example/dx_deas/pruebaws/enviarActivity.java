@@ -1,0 +1,15 @@
+package com.example.dx_deas.pruebaws;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+public class enviarActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_enviar);
+    }
+
+
+}

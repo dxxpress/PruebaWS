@@ -1,7 +1,9 @@
 package com.example.dx_deas.pruebaws;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -37,7 +39,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity  implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -50,6 +52,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     FusedLocationProviderClient mFusedLocationClient;
     double lon;
     double lat;
+    String reusu;
+    String reusu2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +64,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         idUnidad = getIntent().getStringExtra("idUnidad");
         idFlota = getIntent().getStringExtra("idFlota");
-
-
-
-
-
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -83,12 +82,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    @SuppressLint("MissingPermission")
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        @SuppressLint("MissingPermission") Task location = mFusedLocationClient.getLastLocation();
+
+
+
+
+         @SuppressLint("MissingPermission") Task location = mFusedLocationClient.getLastLocation();
         location.addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {
@@ -99,10 +102,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     lat = currentLocation.getLatitude();
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 15));
                     mMap.setTrafficEnabled(true);
-                    mMap.setMyLocationEnabled(true);
+                   // mMap.setMyLocationEnabled(true);
+                    // latitude and longitude
+                   // double latitude = 25.5991301;
+                    //double longitude = -100.2641234;
+
+                    // create marker
+                    //MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("Hello Maps");
+
+                    // Changing marker icon
+                    //marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.truck_icon));
+
+                    // adding marker
+                    //mMap.addMarker(marker);
                     WS_CargaPosiciones ws_cargaPosiciones = new WS_CargaPosiciones();
                     ws_cargaPosiciones.execute();
-                   // mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                    //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 
                 }else {
                     Toast.makeText(MapsActivity.this,"Error Al Cargar Mapa",Toast.LENGTH_SHORT).show();
@@ -117,6 +132,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
     }
+
+
 
 
 
@@ -172,25 +189,78 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     Gson gson = new GsonBuilder().serializeNulls().create();
 
-                    String reusu = tran.replace("{\"UnidadesCercanas\":[{", "[{");
-                    String reusu2 = reusu.replace("}] }", "}]");
+                    reusu = tran.replace("{\"UnidadesCercanas\":[{", "[{");
+                     reusu2 = reusu.replace("}] }", "}]");
 
                     //Se usa la libreria para traducir el json , el string obtenido se almacena en la libreria Usuario
 
                     // Tramos[] Tramos1 = gson.fromJson(reusu2, Tramos[].class);
 
-                    Type tramosListType = new TypeToken<ArrayList<UnidadesCercanas>>(){}.getType();
-                    List<UnidadesCercanas> unidadesCercanas = new Gson().fromJson(reusu2,tramosListType);
+                    Type marker = new TypeToken<ArrayList<UnidadesCercanas>>(){}.getType();
+                     List<UnidadesCercanas> unidadesCercanas = new Gson().fromJson(reusu2,marker);
+
 
                 for(int i =0;i<unidadesCercanas.size();i++) {
-                    final LatLng name = new LatLng(unidadesCercanas.get(i).getLatitud(), unidadesCercanas.get(i).getLongitud());
+                    LatLng name = new LatLng(unidadesCercanas.get(i).getLatitud(), unidadesCercanas.get(i).getLongitud());
 
 
                     String unidad = unidadesCercanas.get(i).getUnidad();
                     String operador  = unidadesCercanas.get(i).getOperador();
                     String telefono = unidadesCercanas.get(i).getTelefono();
+                    double ws_lat = unidadesCercanas.get(i).getLatitud();
+                    double ws_lon = unidadesCercanas.get(i).getLongitud();
 
-                    mMap.addMarker(new MarkerOptions().position(name).title("Unidad: " + unidad).snippet("Operador: " + operador+"  " + "Telefono: "+telefono)).showInfoWindow();
+
+                   mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+
+                    mMap.addMarker(new MarkerOptions().position(name)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.truck_icon))
+                            .title(unidad)
+                            .snippet("Operador: " + operador+ "\n" + "Telefono: "+telefono))
+                            .showInfoWindow();
+
+
+                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                        @Override
+                        public void onInfoWindowClick(Marker marker) {
+
+                            Type marker2 = new TypeToken<ArrayList<UnidadesCercanas>>(){}.getType();
+                            List<UnidadesCercanas> unidadesCercanas2 = new Gson().fromJson(reusu2,marker2);
+
+
+
+                            String uni = marker.getTitle();
+
+                            //Cycle through places array
+                            for(int i =0;i<unidadesCercanas2.size();i++){
+
+                                String unidadNucle = (unidadesCercanas2.get(i).getUnidad());
+
+                                if (uni.equals(unidadNucle)){
+
+                                    //match found!  Do something....
+                                    String match = unidadesCercanas2.get(i).getTelefono();
+                                    if (match.length() <= 0 ){
+
+                                        Toast.makeText(MapsActivity.this,"Sin telefono",Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        //Toast.makeText(MapsActivity.this,"Telefono:" + match ,Toast.LENGTH_SHORT).show();
+                                        Intent callIntent =new Intent(Intent.ACTION_DIAL);
+                                        callIntent.setData(Uri.parse("tel:"+match));
+                                        startActivity(callIntent);
+                                    }
+
+
+
+
+
+                                }
+
+                            }
+
+                        }
+                    });
+
 
 
                 }

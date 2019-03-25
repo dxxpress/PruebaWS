@@ -1,12 +1,28 @@
 package com.example.dx_deas.pruebaws;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Notification;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +38,9 @@ import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import static android.content.Context.BATTERY_SERVICE;
+import static com.example.dx_deas.pruebaws.notifiMen.CHANNEL_ID;
+
 public class viajeFragment extends Fragment {
 
 
@@ -30,7 +49,7 @@ public class viajeFragment extends Fragment {
     private String idUnidad;
     private String idUsuario;
     private View v1,v2;
-    private TextView desttxt, foliotxt,loadtxt,rutatxt,cajatxt,unidadtxt,direTramotxt,ventanatxt,estimadotxt;
+    private TextView desttxt, foliotxt,loadtxt,rutatxt,cajatxt,unidadtxt,direTramotxt,ventanatxt,estimadotxt,prueba;
     private TextView dest, folio,load,ruta,caja,unidad,ventana,estimado,welcome;
     String tran ;
     String responseString = "";
@@ -41,19 +60,29 @@ public class viajeFragment extends Fragment {
     String latitudDestino ;
     String longitudDestino ;
     String idViaje;
+    Button nasa ;
     final Fragment tramos = new tramosFragment();
     final Fragment viajeActual = new viajeActualFragment();
-
+    String deviceIMEI;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
+        CheckPermissionAndStartIntent();
+
         Intent get = getActivity().getIntent();
         nombreOperador = get.getStringExtra("nombreOperador");
         idUsuario = get.getStringExtra("idUsuario");
         idUnidad = get.getStringExtra("idUnidad");
+
+        if (idUnidad == null && idUsuario == null){
+            Intent get2 = getActivity().getIntent();
+            nombreOperador = get2.getStringExtra("nombreOperadorS");
+            idUsuario = get2.getStringExtra("idUsuarioS");
+            idUnidad = get2.getStringExtra("idUnidadS");
+        }
 
         SegundoPlano llamadaWS = new SegundoPlano();
         llamadaWS.execute();
@@ -61,6 +90,7 @@ public class viajeFragment extends Fragment {
 
     }
 
+    @SuppressLint({"MissingPermission", "NewApi"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,6 +107,8 @@ public class viajeFragment extends Fragment {
         direTramotxt = (TextView) view.findViewById(R.id.direTramo);
         ventanatxt = (TextView) view.findViewById(R.id.ventanatxt);
         estimadotxt = (TextView) view.findViewById(R.id.estimadotxt);
+        prueba = (TextView) view.findViewById(R.id.textView4);
+
 
         v1= (View) view.findViewById(R.id.vista1);
         v2= (View) view.findViewById(R.id.vista2);
@@ -93,19 +125,64 @@ public class viajeFragment extends Fragment {
         btnViaje = (Button) view.findViewById(R.id.btnViaje);
         btnTramos = (Button) view.findViewById(R.id.btnTramos);
 
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = getContext().registerReceiver(null, ifilter);
 
-        direTramotxt.setOnClickListener(new View.OnClickListener() {
+        String level = String.valueOf(batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1));
+        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+       // float batteryPct = (level * 100) / (float)scale;
+
+
+       /* TelephonyManager telephonyManager = (TelephonyManager)getContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String c = null;
+
+            c = telephonyManager.getImei();*/
+
+
+
+        welcome.setText(deviceIMEI);
+
+        nasa = (Button) view.findViewById(R.id.button);
+       final int NOTIFICATION_ID = 100;
+
+        nasa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        //google.navigation:q=
-                        Uri.parse("google.navigation:q="+latitudDestino+" "+longitudDestino));
-                startActivity(intent);
+
+
+               // Vibrator vi = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                // Vibrate for 500 milliseconds
+
+
+                NotificationCompat.Builder notificactionBuilder = new NotificationCompat.Builder(getContext(),CHANNEL_ID);
+                notificactionBuilder.setContentTitle("Mensaje Nuevo");
+                notificactionBuilder.setContentText("Favor de abrir la aplicacion");
+                //notificactionBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+                notificactionBuilder.setVibrate(new long[] { 0, 1000  });
+               // notificactionBuilder.setPriority();
+                notificactionBuilder.setDefaults(Notification.DEFAULT_SOUND);
+                notificactionBuilder.setSmallIcon(R.drawable.logodx2);
+
+
+
+                NotificationManagerCompat notificationManagerCompat =  NotificationManagerCompat.from(getContext());
+                notificationManagerCompat.notify(NOTIFICATION_ID,notificactionBuilder.build());
+                //vi.vibrate(500);
             }
         });
 
 
 
+
+        direTramotxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        //google.navigation:q=
+                        Uri.parse("google.navigation:q="+latitudDestino+" "+longitudDestino));
+                startActivity(intent);
+            }
+        });
 
 
         btnViaje.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +253,61 @@ public class viajeFragment extends Fragment {
 
         return view;
     }
+
+  private void CheckPermissionAndStartIntent() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED)
+        {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+            //SEY SOMTHING LIKE YOU CANT ACCESS WITHOUT PERMISSION
+
+        } else {
+            doSomthing();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    doSomthing();
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+
+                    //SEY SOMTHING LIKE YOU CANT ACCESS WITHOUT PERMISSION
+                    //you can show something to user and open setting -> apps -> youApp -> permission
+                    // or unComment below code to show permissionRequest Again
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+                }
+            }
+        }
+    }
+
+
+    public void doSomthing() {
+        deviceIMEI = getDeviceIMEI(getActivity());
+
+        //andGoToYourNextStep
+    }
+
+    @SuppressLint("HardwareIds")
+    public static String getDeviceIMEI(Activity activity) {
+
+        String deviceUniqueIdentifier = null;
+        TelephonyManager tm = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
+        if (null != tm) {
+            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+            else
+                deviceUniqueIdentifier = tm.getDeviceId();
+            if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length())
+                deviceUniqueIdentifier = "0";
+        }
+        return deviceUniqueIdentifier;
+    }
+
+
+
 
 
     private class SegundoPlano extends AsyncTask<Void, Void, Void> {
@@ -266,6 +398,7 @@ public class viajeFragment extends Fragment {
                     latitudDestino = viaje.getLatitudDestino();
                     longitudDestino = viaje.getLongitudDestino();
 
+
                     Bundle args = new Bundle();
                     args.putString("idViaje", idViaje);
                     args.putString("idDetalleViaje", idDetalleViaje);
@@ -298,8 +431,5 @@ public class viajeFragment extends Fragment {
             super.onPostExecute(aVoid);
         }
     }
-
-
-
 
 }

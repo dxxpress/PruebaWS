@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,19 +13,19 @@
     <!-- TODO: Update blank fragment layout -->
 
     <FrameLayout
-    android:id="@+id/tramosContenedor"
-    android:layout_width="361dp"
-    android:layout_height="390dp"
-    android:layout_marginStart="1dp"
-    android:layout_marginTop="1dp"
-    android:layout_marginEnd="1dp"
-    android:layout_marginBottom="1dp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="1.0"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/view"
-    app:layout_constraintVertical_bias="0.0"></FrameLayout>
+        android:id="@+id/tramosContenedor"
+        android:layout_width="348dp"
+        android:layout_height="373dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintVertical_bias="0.4" />
 
 
 
@@ -58,23 +59,26 @@
 
     <Button
         android:id="@+id/btnViaje"
-        android:layout_width="171dp"
-        android:layout_height="wrap_content"
+        android:layout_width="170dp"
+        android:layout_height="41dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="50dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginBottom="1dp"
         android:background="@color/azul_chingon"
         android:text="Viaje Actual"
         android:textColor="@color/blaco_vergas"
         app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toStartOf="@+id/btnTramos"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.758" />
+        app:layout_constraintVertical_bias="0.805" />
 
     <Button
         android:id="@+id/btnTramos"
-        android:layout_width="172dp"
-        android:layout_height="48dp"
+        android:layout_width="170dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="1dp"
@@ -83,8 +87,9 @@
         android:textColor="@color/blaco_vergas"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnViaje"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.758" />
+        app:layout_constraintVertical_bias="0.805" />
 
     <TextView
         android:id="@+id/ventanatxt"
@@ -92,11 +97,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="180dp"
         android:layout_marginTop="140dp"
+        android:layout_marginEnd="8dp"
         android:text=""
         android:textColor="@color/griseson"
         android:textSize="16sp"
         android:textStyle="normal"
         android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -106,11 +114,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="180dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:text=""
         android:textColor="@color/griseson"
         android:textSize="16dp"
         android:textStyle="normal"
         android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.005"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ventanatxt" />
 
@@ -204,10 +215,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="180dp"
         android:layout_marginTop="280dp"
+        android:layout_marginEnd="8dp"
         android:text=""
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.005"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -231,10 +245,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="180dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text=""
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.01"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Destinotxt" />
 
@@ -257,10 +274,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="180dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text=""
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.01"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Foliotxt" />
 
@@ -284,10 +304,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="180dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text=""
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.005"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Loadtxt" />
 
@@ -310,10 +333,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="180dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text=""
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Rutatxt" />
 
@@ -336,12 +362,41 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="180dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text=""
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.005"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Cajatxt" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="256dp"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="51dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="151dp"
+        android:layout_marginBottom="38dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/btnViaje"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
